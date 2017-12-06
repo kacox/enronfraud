@@ -1,0 +1,59 @@
+# Other mini-projects
+choose_your_own/
+datasets_questions/
+decision_tree/
+evaluation/
+feature_selection/
+k_means/
+maildir/
+my_misc_code/
+naive_bayes/
+outliers/
+pca/
+regression/
+svm/
+text_learning/
+validation/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# pyenv
+.python-version
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject

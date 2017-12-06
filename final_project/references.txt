@@ -1,0 +1,3 @@
+https://discussions.udacity.com/t/project-fear-strugging-with-machine-learning-project/198529/2
+https://docs.scipy.org/
+https://stackoverflow.com/questions/7352220/how-to-plot-1-d-data-at-given-y-value-with-pylab
