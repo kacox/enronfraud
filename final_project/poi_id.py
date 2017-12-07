@@ -6,6 +6,7 @@ import sys
 import pickle
 sys.path.append("../tools/")
 import numpy as np
+import operator
 
 from feature_format import featureFormat, targetFeatureSplit
 from tester import dump_classifier_and_data
@@ -91,15 +92,28 @@ for item in removal_list:
 # Remove artifact in data (found during lectures)
 data_dict.pop("TOTAL", 0)
 
-# 2D removal
-#cleaned_data_dict = helper.remove_outliers(data_dict, "salary", 
-#                                           "total_payments", 90)
-
 # Visual inspection
-helper.draw(data_dict, "salary", "total_payments")
+helper.draw(data_dict, "salary", "other")
+helper.draw_1D(data_dict, "other")
+print helper.find_max_person(data_dict, "other")
 
-helper.draw_1D(data_dict, "total_payments")
+# Check data points with many missing values
+nan_dict = {}
+for person, feature_dict in data_dict.iteritems():
+    for feature in feature_dict.iterkeys():
+        if feature_dict[feature] == "NaN":
+            if person in nan_dict.keys():
+                nan_dict[person] += 1
+            else:
+                nan_dict[person] = 1
 
+print sorted(nan_dict.items(), key=operator.itemgetter(1), reverse=True)[:10]
+print data_dict['LOCKHART EUGENE E']
+print data_dict['THE TRAVEL AGENCY IN THE PARK']
+
+# Remove these data points
+data_dict.pop("LOCKHART EUGENE E", 0)
+data_dict.pop("THE TRAVEL AGENCY IN THE PARK", 0)
 
 """
 ### Task 3: Create new feature(s)
@@ -109,6 +123,7 @@ my_dataset = data_dict
 ### Extract features and labels from dataset for local testing
 data = featureFormat(my_dataset, features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
+
 
 ### Task 4: Try a varity of classifiers
 ### Please name your classifier clf for easy export below.

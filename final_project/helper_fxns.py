@@ -164,3 +164,21 @@ def create_feature_array(data_as_dict, feature_name):
                     feature_list.append(val)
 
     return np.array(feature_list)
+
+
+def find_max_person(data_as_dict, feature_name):
+    """
+    Takes the Enron data as a dictionary (data_as_dict) and a feature as a 
+    string.
+
+    Returns the person with the highest value for that feature and the value
+    itself.
+    """  
+    max_val, max_person = float("-inf"), None
+    for person, feature_dict in data_as_dict.iteritems():
+        if (feature_dict[feature_name] != "NaN") and \
+                                    (feature_dict[feature_name] > max_val):
+            max_val = feature_dict[feature_name]
+            max_person = person
+    return max_person, max_val
+
