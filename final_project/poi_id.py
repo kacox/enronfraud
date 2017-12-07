@@ -81,7 +81,7 @@ print "75th percentile:", np.percentile(nan_list, 75)
 # Remove features with too many missing values
 removal_list = ["director_fees", "deferred_income", 
                 "restricted_stock_deferred", "loan_advances", 
-                "deferral_payments"]
+                "deferral_payments", "email_address"]
 
 my_features_list = list(features_list)
 for item in removal_list:
@@ -126,7 +126,7 @@ data_dict = helper.create_fraction_feature(data_dict,"from_poi_to_this_person",
 my_dataset = data_dict
 
 ### Extract features and labels from dataset for local testing
-data = featureFormat(my_dataset, features_list, sort_keys = True)
+data = featureFormat(my_dataset, my_features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
 
 
