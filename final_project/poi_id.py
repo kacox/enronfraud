@@ -72,11 +72,11 @@ print "Median:", np.median(nan_list)
 print "75th percentile:", np.percentile(nan_list, 75)
 
 # 1D inspection of missing values (checking before ruling out)
-helper.draw_1D(data_dict, "director_fees")
-helper.draw_1D(data_dict, "deferred_income")
-helper.draw_1D(data_dict, "restricted_stock_deferred")
-helper.draw_1D(data_dict, "loan_advances")
-helper.draw_1D(data_dict, "deferral_payments")
+#helper.draw_1D(data_dict, "director_fees")
+#helper.draw_1D(data_dict, "deferred_income")
+#helper.draw_1D(data_dict, "restricted_stock_deferred")
+#helper.draw_1D(data_dict, "loan_advances")
+#helper.draw_1D(data_dict, "deferral_payments")
 
 # Remove features with too many missing values
 removal_list = ["director_fees", "deferred_income", 
@@ -93,9 +93,9 @@ for item in removal_list:
 data_dict.pop("TOTAL", 0)
 
 # Visual inspection
-helper.draw(data_dict, "salary", "other")
-helper.draw_1D(data_dict, "other")
-print helper.find_max_person(data_dict, "other")
+helper.draw(data_dict, "salary", "bonus")
+helper.draw_1D(data_dict, "salary")
+print helper.find_max_person(data_dict, "salary")
 
 # Check data points with many missing values
 nan_dict = {}
@@ -115,8 +115,13 @@ print data_dict['THE TRAVEL AGENCY IN THE PARK']
 data_dict.pop("LOCKHART EUGENE E", 0)
 data_dict.pop("THE TRAVEL AGENCY IN THE PARK", 0)
 
-"""
+
 ### Task 3: Create new feature(s)
+data_dict = helper.create_fraction_feature(data_dict,"from_this_person_to_poi", 
+                                           "from_messages", "fraction_to_poi")
+data_dict = helper.create_fraction_feature(data_dict,"from_poi_to_this_person", 
+                                           "to_messages", "fraction_from_poi")
+ 
 ### Store to my_dataset for easy export below.
 my_dataset = data_dict
 
@@ -125,6 +130,7 @@ data = featureFormat(my_dataset, features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
 
 
+"""
 ### Task 4: Try a varity of classifiers
 ### Please name your classifier clf for easy export below.
 ### Note that if you want to do PCA or other multi-stage operations,

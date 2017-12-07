@@ -182,3 +182,24 @@ def find_max_person(data_as_dict, feature_name):
             max_person = person
     return max_person, max_val
 
+def create_fraction_feature(data_as_dict, num_feature, denom_feature, 
+                            new_feature):
+    """
+    Takes the Enron data as a dictionary (data_as_dict), a feature to serve 
+    as the numerator, a feature to serve as the denominator, and the desired 
+    name for the newly created feature; the latter three items are strings.
+    
+    Returns the input dictionary with the addition of the new feature.
+    """
+    for person in data_as_dict.iterkeys():
+        if (data_as_dict[person][num_feature] == "NaN") or \
+                            (data_as_dict[person][denom_feature] == "NaN"):
+            fraction_to_poi = 0
+            data_as_dict[person][new_feature] = fraction_to_poi
+        else:
+            numerator = float(data_as_dict[person][num_feature])
+            denominator =  float(data_as_dict[person][denom_feature])
+            fraction_to_poi = numerator / denominator
+            data_as_dict[person][new_feature] = fraction_to_poi
+            
+    return data_as_dict
