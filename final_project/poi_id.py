@@ -130,17 +130,81 @@ data = featureFormat(my_dataset, my_features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
 
 
-"""
-### Task 4: Try a varity of classifiers
+### Task 4: Try a variety of classifiers
 ### Please name your classifier clf for easy export below.
 ### Note that if you want to do PCA or other multi-stage operations,
 ### you'll need to use Pipelines. For more info:
 ### http://scikit-learn.org/stable/modules/pipeline.html
 
-# Provided to give you a starting point. Try a variety of classifiers.
-from sklearn.naive_bayes import GaussianNB
-clf = GaussianNB()
+# Split into training and testing sets
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(features, labels, 
+                                    test_size=0.2, random_state=81)
 
+# Naive Bayes
+from sklearn.naive_bayes import GaussianNB
+nb_clf = GaussianNB()
+nb_clf.fit(X_train, y_train)
+print nb_clf.score(X_test, y_test)
+# 0.7586 (random_state=81)
+# 0.9310 (random_state=37)
+
+# Decision Tree
+from sklearn.tree import DecisionTreeClassifier
+dt_clf = DecisionTreeClassifier()
+dt_clf.fit(X_train, y_train)
+print dt_clf.score(X_test, y_test)
+# 0.8966 (random_state=81)
+# 0.9655 (random_state=37)
+
+# Support Vector Machine
+from sklearn import svm
+svm_clf = svm.SVC()
+svm_clf.fit(X_train, y_train)
+print svm_clf.score(X_test, y_test)
+# 0.8966 (random_state=81)
+# 1.00 (random_state=37)
+
+# Try with PCA
+from sklearn.decomposition import PCA
+pca = PCA(n_components=2)       # financial latent, email/contact latent
+pca.fit(X_train)
+
+reduced_data = pca.transform(X_train)
+reduced_test = pca.transform(X_test)
+
+# PCA / Naive Bayes
+nb_clf2 = GaussianNB()
+nb_clf2.fit(reduced_data, y_train)
+print nb_clf2.score(reduced_test, y_test)
+# 0.8966 (random_state=81)
+# 0.8966 (random_state=37)
+
+# PCA / Decision Tree
+dt_clf2 = DecisionTreeClassifier()
+dt_clf2.fit(reduced_data, y_train)
+print dt_clf2.score(reduced_test, y_test)
+# 0.7586 (random_state=81)
+# 0.8276 (random_state=37)
+
+# PCA / SVM
+svm_clf2 = svm.SVC()
+svm_clf2.fit(reduced_data, y_train)
+print svm_clf2.score(reduced_test, y_test)
+# 0.8966 (random_state=81)
+# 0.9310 (random_state=37)
+
+# Test to see which classifier to proceed with
+from sklearn.metrics import recall_score
+print "Recall:", recall_score(y_test, nb_clf.predict(X_test))
+
+from sklearn.metrics import precision_score
+print "Precision:", precision_score(y_test, nb_clf.predict(X_test))
+
+# Selected classifier
+clf = dt_clf
+
+"""
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
 ### using our testing script. Check the tester.py script in the final project
 ### folder for details on the evaluation method, especially the test_classifier
