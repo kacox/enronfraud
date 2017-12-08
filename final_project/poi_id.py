@@ -141,8 +141,11 @@ from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(features, labels, 
                                     test_size=0.2, random_state=81)
 
-# Naive Bayes
 from sklearn.naive_bayes import GaussianNB
+from sklearn.tree import DecisionTreeClassifier
+from sklearn import svm
+
+# Naive Bayes
 nb_clf = GaussianNB()
 nb_clf.fit(X_train, y_train)
 print nb_clf.score(X_test, y_test)
@@ -150,7 +153,6 @@ print nb_clf.score(X_test, y_test)
 # 0.9310 (random_state=37)
 
 # Decision Tree
-from sklearn.tree import DecisionTreeClassifier
 dt_clf = DecisionTreeClassifier()
 dt_clf.fit(X_train, y_train)
 print dt_clf.score(X_test, y_test)
@@ -158,7 +160,6 @@ print dt_clf.score(X_test, y_test)
 # 0.9655 (random_state=37)
 
 # Support Vector Machine
-from sklearn import svm
 svm_clf = svm.SVC()
 svm_clf.fit(X_train, y_train)
 print svm_clf.score(X_test, y_test)
@@ -196,15 +197,16 @@ print svm_clf2.score(reduced_test, y_test)
 
 # Test to see which classifier to proceed with
 from sklearn.metrics import recall_score
-print "Recall:", recall_score(y_test, nb_clf.predict(X_test))
+print "Recall:", recall_score(y_test, dt_clf2.predict(reduced_test))
 
 from sklearn.metrics import precision_score
-print "Precision:", precision_score(y_test, nb_clf.predict(X_test))
+print "Precision:", precision_score(y_test, dt_clf2.predict(reduced_test))
 
 # Selected classifier
-clf = dt_clf
+#clf = DecisionTreeClassifier(min_samples_split=4)
+clf = GaussianNB()
 
-"""
+
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
 ### using our testing script. Check the tester.py script in the final project
 ### folder for details on the evaluation method, especially the test_classifier
@@ -212,11 +214,39 @@ clf = dt_clf
 ### stratified shuffle split cross validation. For more info: 
 ### http://scikit-learn.org/stable/modules/generated/sklearn.cross_validation.StratifiedShuffleSplit.html
 
-# Example starting point. Try investigating other evaluation techniques!
-from sklearn.cross_validation import train_test_split
-features_train, features_test, labels_train, labels_test = \
-    train_test_split(features, labels, test_size=0.3, random_state=42)
+# K-folds cross validation
+from sklearn.model_selection import KFold
+kf = KFold(n_splits=2, shuffle=True)
+for train_indices, validation_indices in kf.split(reduced_data):
+    # Designate training and validation sets
+    features_train = [reduced_data[t_indx] for t_indx in train_indices]
+    labels_train = [y_train[t_indx] for t_indx in train_indices]
+    features_validation = [reduced_data[v_indx] for v_indx in validation_indices]
+    labels_validation = [y_train[v_indx] for v_indx in validation_indices]
 
+    # Fit
+    clf.fit(features_train, labels_train)
+    
+    # Score using validation set
+    print "Validation Set Score:", clf.score(features_validation, labels_validation)
+    
+    # Score with X_test, y_test (withheld from validation)
+    print "Test Set Score:", clf.score(reduced_test, y_test)
+    print "Recall:", recall_score(y_test, clf.predict(reduced_test))
+    print "Precision:", precision_score(y_test, clf.predict(reduced_test)), "\n"
+
+
+# GridSearchCV (cross validation for parameter tuning)
+"""
+from sklearn.model_selection import GridSearchCV
+clf_to_tune = DecisionTreeClassifier()
+parameters = {'min_samples_split':(2, 3, 4, 5, 6)}
+cv_clf = GridSearchCV(clf, parameters)
+cv_clf.fit(X_train, y_train)
+print cv_clf.best_params_
+"""
+
+"""
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
 ### check your results. You do not need to change anything below, but make sure
 ### that the version of poi_id.py that you submit can be run on its own and
