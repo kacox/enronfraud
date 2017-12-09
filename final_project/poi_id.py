@@ -166,46 +166,6 @@ print svm_clf.score(X_test, y_test)
 # 0.8966 (random_state=81)
 # 1.00 (random_state=37)
 
-# Try with PCA
-from sklearn.decomposition import PCA
-pca = PCA(n_components=2)       # financial latent, email/contact latent
-pca.fit(X_train)
-
-reduced_data = pca.transform(X_train)
-reduced_test = pca.transform(X_test)
-
-# PCA / Naive Bayes
-nb_clf2 = GaussianNB()
-nb_clf2.fit(reduced_data, y_train)
-print nb_clf2.score(reduced_test, y_test)
-# 0.8966 (random_state=81)
-# 0.8966 (random_state=37)
-
-# PCA / Decision Tree
-dt_clf2 = DecisionTreeClassifier()
-dt_clf2.fit(reduced_data, y_train)
-print dt_clf2.score(reduced_test, y_test)
-# 0.7586 (random_state=81)
-# 0.8276 (random_state=37)
-
-# PCA / SVM
-svm_clf2 = svm.SVC()
-svm_clf2.fit(reduced_data, y_train)
-print svm_clf2.score(reduced_test, y_test)
-# 0.8966 (random_state=81)
-# 0.9310 (random_state=37)
-
-# Test to see which classifier to proceed with
-from sklearn.metrics import recall_score
-print "Recall:", recall_score(y_test, dt_clf2.predict(reduced_test))
-
-from sklearn.metrics import precision_score
-print "Precision:", precision_score(y_test, dt_clf2.predict(reduced_test))
-
-# Selected classifier
-#clf = DecisionTreeClassifier(min_samples_split=4)
-clf = GaussianNB()
-
 
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
 ### using our testing script. Check the tester.py script in the final project
