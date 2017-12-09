@@ -216,25 +216,59 @@ clf = GaussianNB()
 
 # K-folds cross validation
 from sklearn.model_selection import KFold
-kf = KFold(n_splits=2, shuffle=True)
-for train_indices, validation_indices in kf.split(reduced_data):
-    # Designate training and validation sets
-    features_train = [reduced_data[t_indx] for t_indx in train_indices]
-    labels_train = [y_train[t_indx] for t_indx in train_indices]
-    features_validation = [reduced_data[v_indx] for v_indx in validation_indices]
-    labels_validation = [y_train[v_indx] for v_indx in validation_indices]
+from sklearn.metrics import recall_score
+from sklearn.metrics import precision_score
 
-    # Fit
-    clf.fit(features_train, labels_train)
+def kfold_eval(clf, X_train, y_train, X_test, y_test, num_folds):
+    """
+    Takes a classifier object, training features, training labels, test 
+    features, test labels, and the number of folds (independent experiments) 
+    to perform.
     
-    # Score using validation set
-    print "Validation Set Score:", clf.score(features_validation, labels_validation)
+    Reports the average scores, recall, and precision for the given 
+    classifier.
     
-    # Score with X_test, y_test (withheld from validation)
-    print "Test Set Score:", clf.score(reduced_test, y_test)
-    print "Recall:", recall_score(y_test, clf.predict(reduced_test))
-    print "Precision:", precision_score(y_test, clf.predict(reduced_test)), "\n"
+    Returns nothing.
+    """
+    cumulative_validation = []
+    cumulative_test_score = []
+    cumulative_recall = []
+    cumulative_precision = []
+    
+    kf = KFold(n_splits=num_folds, shuffle=True)
+    for train_indices, validation_indices in kf.split(X_train):
+        # Designate training and validation sets
+        features_train = [X_train[t_indx] for t_indx in train_indices]
+        labels_train = [y_train[t_indx] for t_indx in train_indices]
+        features_validation = [X_train[v_indx] for v_indx in validation_indices]
+        labels_validation = [y_train[v_indx] for v_indx in validation_indices]
+    
+        # Fit
+        clf.fit(features_train, labels_train)
+        
+        # Score using validation set
+        cumulative_validation.append(clf.score(features_validation, labels_validation))
+        
+        # Score with X_test, y_test (withheld from validation)
+        cumulative_test_score.append(clf.score(X_test, y_test))
+        cumulative_recall.append(recall_score(y_test, 
+                                                  clf.predict(X_test)))
+        cumulative_precision.append(precision_score(y_test, 
+                                                     clf.predict(X_test)))
+        
+    # Report averages
+    print "Avg. Validation Set Score:", (float(sum(cumulative_validation)) / 
+                                         len(cumulative_validation))
+    print "Avg. Test Set Score:", (float(sum(cumulative_test_score)) / 
+                                   len(cumulative_test_score))
+    print "Avg. Recall:", (float(sum(cumulative_recall)) / len(cumulative_recall))
+    print "Avg. Precision:", (float(sum(cumulative_precision)) / 
+                                         len(cumulative_precision))
 
+
+    
+clf = GaussianNB()  
+kfold_eval(clf, X_train, y_train, X_test, y_test, 2)
 
 # GridSearchCV (cross validation for parameter tuning)
 """
