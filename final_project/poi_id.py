@@ -95,7 +95,7 @@ data_dict.pop("TOTAL", 0)
 # Visual inspection
 helper.draw(data_dict, "salary", "bonus")
 helper.draw_1D(data_dict, "salary")
-print helper.find_max_person(data_dict, "salary")
+#print helper.find_max_person(data_dict, "salary")
 
 # Check data points with many missing values
 nan_dict = {}
@@ -107,9 +107,9 @@ for person, feature_dict in data_dict.iteritems():
             else:
                 nan_dict[person] = 1
 
-print sorted(nan_dict.items(), key=operator.itemgetter(1), reverse=True)[:10]
-print data_dict['LOCKHART EUGENE E']
-print data_dict['THE TRAVEL AGENCY IN THE PARK']
+#print sorted(nan_dict.items(), key=operator.itemgetter(1), reverse=True)[:10]
+#print data_dict['LOCKHART EUGENE E']
+#print data_dict['THE TRAVEL AGENCY IN THE PARK']
 
 # Remove these data points
 data_dict.pop("LOCKHART EUGENE E", 0)
@@ -148,21 +148,21 @@ from sklearn import svm
 # Naive Bayes
 nb_clf = GaussianNB()
 nb_clf.fit(X_train, y_train)
-print nb_clf.score(X_test, y_test)
+#print nb_clf.score(X_test, y_test)
 # 0.7586 (random_state=81)
 # 0.9310 (random_state=37)
 
 # Decision Tree
 dt_clf = DecisionTreeClassifier()
 dt_clf.fit(X_train, y_train)
-print dt_clf.score(X_test, y_test)
+#print dt_clf.score(X_test, y_test)
 # 0.8966 (random_state=81)
 # 0.9655 (random_state=37)
 
 # Support Vector Machine
 svm_clf = svm.SVC()
 svm_clf.fit(X_train, y_train)
-print svm_clf.score(X_test, y_test)
+#print svm_clf.score(X_test, y_test)
 # 0.8966 (random_state=81)
 # 1.00 (random_state=37)
 
@@ -217,6 +217,7 @@ def kfold_eval(clf, X_train, y_train, X_test, y_test, num_folds):
                                                      clf.predict(X_test)))
         
     # Report averages
+    print clf
     print "Avg. Validation Set Score:", (float(sum(cumulative_validation)) / 
                                          len(cumulative_validation))
     print "Avg. Test Set Score:", (float(sum(cumulative_test_score)) / 
