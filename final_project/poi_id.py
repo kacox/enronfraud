@@ -121,9 +121,14 @@ data_dict = helper.create_fraction_feature(data_dict,"from_this_person_to_poi",
                                            "from_messages", "fraction_to_poi")
 data_dict = helper.create_fraction_feature(data_dict,"from_poi_to_this_person", 
                                            "to_messages", "fraction_from_poi")
+
+# Normalize features
+no_poi_features_list = list(my_features_list)
+no_poi_features_list.remove("poi")
+my_dataset = helper.rescale_features(data_dict, no_poi_features_list)
  
 ### Store to my_dataset for easy export below.
-my_dataset = data_dict
+#my_dataset = data_dict
 
 ### Extract features and labels from dataset for local testing
 data = featureFormat(my_dataset, my_features_list, sort_keys = True)

@@ -26,6 +26,7 @@ def count_missing_values(data_as_dict):
             
     return missing_value_dict
 
+
 def draw_1D(data_as_dict, feature_name):
     """
     Takes the Enron data as a dictionary (data_as_dict) and a feature to plot 
@@ -52,60 +53,6 @@ def draw_1D(data_as_dict, feature_name):
     plt.show()
 
 
-def remove_outliers(data_dict, feature1, feature2, percentile):
-    """
-    Takes the Enron data as a dictionary (data_dict), two feature names as 
-    strings, and a percentile beyond which data points are considered 
-    outliers.
-    
-    Removes outlier data points.
-    
-    Returns a a copy of the input dictionary without outlier data points.
-    """
-    data_dict_copy = dict(data_dict)
-
-    # find outliers
-    threshold1, threshold2 = find_outliers(data_dict, feature1, feature2, 
-                                           percentile)
-
-    # remove outliers
-    for person, feature_dict in data_dict.iteritems():
-        removed_flag = False
-        for feature, val in feature_dict.iteritems():
-            if removed_flag == False:
-                if (feature == feature1) and (val > threshold1):
-                    data_dict_copy.pop(person)
-                    removed_flag = True
-                elif (feature == feature2) and (val > threshold2):
-                    data_dict_copy.pop(person)
-                    removed_flag = True
-
-    return data_dict_copy
-
-
-def find_outliers(data_as_dict, feature1, feature2, percentile):
-    """
-    Takes the Enron data as a dictionary (data_dict), two feature names as 
-    strings, and an integer indicating the percentile above which data points 
-    should be considered outliers.
-
-    Returns outlier thresholds for feature1 and feature2.  
-    """
-    # create feature arrays
-    feature1_list = create_feature_array(data_as_dict, feature1)
-    feature2_list = create_feature_array(data_as_dict, feature2)
-
-    # replace NaNs with 0
-    no_nans_feature1 = replace_nans(feature1_list, 0)
-    no_nans_feature2 = replace_nans(feature2_list, 0)
-
-    # find cutoff
-    feature1_threshold = np.percentile(no_nans_feature1, percentile)
-    feature2_threshold = np.percentile(no_nans_feature2, percentile)
-
-    return feature1_threshold, feature2_threshold
-
-
 def replace_nans(array, replacement):
     """
     Takes an array and a replacement value.
@@ -114,11 +61,9 @@ def replace_nans(array, replacement):
 
     Returns the resulting array as a list.
     """
-    import numpy as np
-    
     array_copy = list(array)
     for indx, element in enumerate(array):
-        if np.isnan(element):
+        if element == "NaN":
             array_copy[indx] = replacement
 
     return array_copy
@@ -203,3 +148,44 @@ def create_fraction_feature(data_as_dict, num_feature, denom_feature,
             data_as_dict[person][new_feature] = fraction_to_poi
             
     return data_as_dict
+
+
+def rescale_features(data_as_dict, feature_list):
+    """
+    Takes the Enron data as a dictionary (data_as_dict) and a list of features 
+    to rescale (normalize).
+    
+    Returns a dictionary with the desired features rescaled.
+    """
+    # Make copy of input dictionary
+    rescaled_dict = data_as_dict.copy()
+    
+    # Rescale feature by feature
+    for feature in feature_list:
+        val_list = []
+        person_list = []
+        
+        # Build lists in preserved order with persons and respective values 
+        # for the given iteration's feature
+        for person in data_as_dict.iterkeys():
+            person_list.append(person)
+            val_list.append(data_as_dict[person][feature])
+            
+        # Replace NaNs in val_list
+        val_list = replace_nans(val_list, 0)
+        
+        # Rescale values
+        xmin = min(val_list)
+        xmax = max(val_list)        
+        rescaled_val = []
+        for val in val_list:
+            rescaled = float((val - xmin))/(xmax - xmin)
+            rescaled_val.append(rescaled)
+
+        
+        # Put rescaled value into dict copy
+        for person in data_as_dict.iterkeys():
+            rescaled_dict[person][feature] = \
+                                rescaled_val[person_list.index(person)]
+                                       
+    return rescaled_dict
