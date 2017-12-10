@@ -144,7 +144,7 @@ labels, features = targetFeatureSplit(data)
 # Split into training and testing sets
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(features, labels, 
-                                    test_size=0.2, random_state=81)
+                                    test_size=0.3, random_state=81)
 
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
@@ -154,22 +154,22 @@ from sklearn import svm
 nb_clf = GaussianNB()
 nb_clf.fit(X_train, y_train)
 #print nb_clf.score(X_test, y_test)
-# 0.7586 (random_state=81)
-# 0.9310 (random_state=37)
+# 0.7907 (random_state=81)
+# 0.9302 (random_state=37)
 
 # Decision Tree
 dt_clf = DecisionTreeClassifier()
 dt_clf.fit(X_train, y_train)
 #print dt_clf.score(X_test, y_test)
-# 0.8966 (random_state=81)
-# 0.9655 (random_state=37)
+# 0.8605 (random_state=81)
+# 0.8605 (random_state=37)
 
 # Support Vector Machine
 svm_clf = svm.SVC()
 svm_clf.fit(X_train, y_train)
 #print svm_clf.score(X_test, y_test)
-# 0.8966 (random_state=81)
-# 1.00 (random_state=37)
+# 0.9070 (random_state=81)
+# 0.9767 (random_state=37)
 
 
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
@@ -233,18 +233,17 @@ def kfold_eval(clf, X_train, y_train, X_test, y_test, num_folds):
 
 
     
-clf = GaussianNB()  
+clf = DecisionTreeClassifier(min_samples_split=5)  
 kfold_eval(clf, X_train, y_train, X_test, y_test, 2)
 
 # GridSearchCV (cross validation for parameter tuning)
-"""
 from sklearn.model_selection import GridSearchCV
 clf_to_tune = DecisionTreeClassifier()
 parameters = {'min_samples_split':(2, 3, 4, 5, 6)}
 cv_clf = GridSearchCV(clf, parameters)
 cv_clf.fit(X_train, y_train)
 print cv_clf.best_params_
-"""
+
 
 """
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
