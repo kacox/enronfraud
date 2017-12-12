@@ -15,6 +15,11 @@ svm/
 text_learning/
 validation/
 
+# Specific files
+poi_id_old.py
+enron61702insiderpay.pdf
+explore_enron_data.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
