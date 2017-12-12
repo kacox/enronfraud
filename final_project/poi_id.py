@@ -122,6 +122,12 @@ data_dict = helper.create_fraction_feature(data_dict,"from_this_person_to_poi",
 data_dict = helper.create_fraction_feature(data_dict,"from_poi_to_this_person", 
                                            "to_messages", "fraction_from_poi")
 
+# Add new features to list
+print len(my_features_list)
+my_features_list.append("fraction_to_poi")
+my_features_list.append("fraction_from_poi")
+print len(my_features_list)
+
 # Normalize features
 no_poi_features_list = list(my_features_list)
 no_poi_features_list.remove("poi")
