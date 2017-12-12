@@ -6,7 +6,6 @@ import sys
 import pickle
 sys.path.append("../tools/")
 import numpy as np
-import operator
 
 from feature_format import featureFormat, targetFeatureSplit
 from tester import dump_classifier_and_data
@@ -248,7 +247,7 @@ def kfold_eval(clf, X_train, y_train, X_test, y_test, num_folds):
     
 clf = DecisionTreeClassifier(min_samples_split=5)  
 kfold_eval(clf, X_train, y_train, X_test, y_test, 4)
-
+"""
 # GridSearchCV (cross validation for parameter tuning)
 from sklearn.model_selection import GridSearchCV
 clf_to_tune = DecisionTreeClassifier()
@@ -256,7 +255,7 @@ parameters = {'min_samples_split':(2, 3, 4, 5, 6)}
 cv_clf = GridSearchCV(clf, parameters)
 cv_clf.fit(X_train, y_train)
 print cv_clf.best_params_
-
+"""
 
 """
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
