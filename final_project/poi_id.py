@@ -140,7 +140,7 @@ labels, features = targetFeatureSplit(data)
 print "Before:", np.asarray(features).shape
 
 from sklearn.feature_selection import SelectKBest
-selector = SelectKBest(k=10)
+selector = SelectKBest(k=5)
 selector.fit(features, labels)
 features = np.asarray(selector.transform(features))
 
@@ -257,11 +257,11 @@ cv_clf.fit(X_train, y_train)
 print cv_clf.best_params_
 """
 
-"""
+
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
 ### check your results. You do not need to change anything below, but make sure
 ### that the version of poi_id.py that you submit can be run on its own and
 ### generates the necessary .pkl files for validating your results.
 
-dump_classifier_and_data(clf, my_dataset, features_list)
-"""
+dump_classifier_and_data(clf, my_dataset, my_features_list)
+
