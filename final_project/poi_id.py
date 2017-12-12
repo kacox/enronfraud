@@ -126,13 +126,20 @@ data_dict = helper.create_fraction_feature(data_dict,"from_poi_to_this_person",
 no_poi_features_list = list(my_features_list)
 no_poi_features_list.remove("poi")
 my_dataset = helper.rescale_features(data_dict, no_poi_features_list)
- 
-### Store to my_dataset for easy export below.
-#my_dataset = data_dict
 
 ### Extract features and labels from dataset for local testing
 data = featureFormat(my_dataset, my_features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
+
+# Select k best features
+print "Before:", np.asarray(features).shape
+
+from sklearn.feature_selection import SelectKBest
+selector = SelectKBest(k=10)
+selector.fit(features, labels)
+features = np.asarray(selector.transform(features))
+
+print "After", features.shape
 
 
 ### Task 4: Try a variety of classifiers
@@ -234,7 +241,7 @@ def kfold_eval(clf, X_train, y_train, X_test, y_test, num_folds):
 
     
 clf = DecisionTreeClassifier(min_samples_split=5)  
-kfold_eval(clf, X_train, y_train, X_test, y_test, 2)
+kfold_eval(clf, X_train, y_train, X_test, y_test, 4)
 
 # GridSearchCV (cross validation for parameter tuning)
 from sklearn.model_selection import GridSearchCV
