@@ -137,14 +137,20 @@ data = featureFormat(my_dataset, my_features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
 
 # Select k best features
-print "Before:", np.asarray(features).shape
-
 from sklearn.feature_selection import SelectKBest
-selector = SelectKBest(k=5)
-selector.fit(features, labels)
-features = np.asarray(selector.transform(features))
+import pandas as pd
+X_df = pd.DataFrame(features, columns=no_poi_features_list) 
+y_df = pd.DataFrame(labels) 
 
-print "After", features.shape
+print "before:", X_df.shape
+selector = SelectKBest(k=5)
+selector.fit(X_df, y_df)
+X_new = selector.transform(X_df)
+print "after:", X_new.shape
+
+# Get names of K best features
+print X_df.columns[selector.get_support(indices=True)]
+print sorted(selector.scores_, reverse=True)[:5]
 
 
 ### Task 4: Try a variety of classifiers
