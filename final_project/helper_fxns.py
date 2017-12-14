@@ -69,7 +69,7 @@ def replace_nans(array, replacement):
     return array_copy
 
 
-def draw(data_as_dict, feature_x, feature_y):
+def make_2D_plot(data_as_dict, feature_x, feature_y):
     """ 
     Takes the Enron data as a dictionary (data_as_dict) and two features to 
     plot as strings.

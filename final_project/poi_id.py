@@ -92,7 +92,7 @@ for item in removal_list:
 data_dict.pop("TOTAL", 0)
 
 # Visual inspection
-helper.draw(data_dict, "salary", "bonus")
+helper.make_2D_plot(data_dict, "salary", "bonus")
 helper.draw_1D(data_dict, "salary")
 #print helper.find_max_person(data_dict, "salary")
 
