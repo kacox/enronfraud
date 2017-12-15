@@ -201,62 +201,13 @@ svm_clf.fit(X_train, y_train)
 ### stratified shuffle split cross validation. For more info: 
 ### http://scikit-learn.org/stable/modules/generated/sklearn.cross_validation.StratifiedShuffleSplit.html
 
-# K-folds cross validation
-from sklearn.model_selection import KFold
 from sklearn.metrics import recall_score
 from sklearn.metrics import precision_score
 
-def kfold_eval(clf, X_train, y_train, X_test, y_test, num_folds):
-    """
-    Takes a classifier object, training features, training labels, test 
-    features, test labels, and the number of folds (independent experiments) 
-    to perform.
-    
-    Reports the average scores, recall, and precision for the given 
-    classifier.
-    
-    Returns nothing.
-    """
-    cumulative_validation = []
-    cumulative_test_score = []
-    cumulative_recall = []
-    cumulative_precision = []
-    
-    kf = KFold(n_splits=num_folds, shuffle=True)
-    for train_indices, validation_indices in kf.split(X_train):
-        # Designate training and validation sets
-        features_train = [X_train[t_indx] for t_indx in train_indices]
-        labels_train = [y_train[t_indx] for t_indx in train_indices]
-        features_validation = [X_train[v_indx] for v_indx in validation_indices]
-        labels_validation = [y_train[v_indx] for v_indx in validation_indices]
-    
-        # Fit
-        clf.fit(features_train, labels_train)
-        
-        # Score using validation set
-        cumulative_validation.append(clf.score(features_validation, labels_validation))
-        
-        # Score with X_test, y_test (withheld from validation)
-        cumulative_test_score.append(clf.score(X_test, y_test))
-        cumulative_recall.append(recall_score(y_test, 
-                                                  clf.predict(X_test)))
-        cumulative_precision.append(precision_score(y_test, 
-                                                     clf.predict(X_test)))
-        
-    # Report averages
-    print clf
-    print "Avg. Validation Set Score:", (float(sum(cumulative_validation)) / 
-                                         len(cumulative_validation))
-    print "Avg. Test Set Score:", (float(sum(cumulative_test_score)) / 
-                                   len(cumulative_test_score))
-    print "Avg. Recall:", (float(sum(cumulative_recall)) / len(cumulative_recall))
-    print "Avg. Precision:", (float(sum(cumulative_precision)) / 
-                                         len(cumulative_precision))
-
-
-    
-clf = GaussianNB()
-kfold_eval(clf, X_train, y_train, X_test, y_test, 4)
+print nb_clf
+print "Validation Set Score:", nb_clf.score(X_test, y_test)
+print "Recall:", recall_score(y_test, nb_clf.predict(X_test))
+print "Precision:", precision_score(y_test, nb_clf.predict(X_test))
 
 """
 # GridSearchCV (cross validation for parameter tuning)
@@ -274,8 +225,9 @@ print cv_clf.best_params_
 ### that the version of poi_id.py that you submit can be run on its own and
 ### generates the necessary .pkl files for validating your results.
 
-# Final choice features list.
+# Final choice features list and algorithm.
 my_features_list = k_best_features
+clf = GaussianNB()
 
 dump_classifier_and_data(clf, my_dataset, my_features_list)
 
