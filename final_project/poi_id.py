@@ -136,6 +136,9 @@ my_dataset = helper.rescale_features(data_dict, no_poi_features_list)
 data = featureFormat(my_dataset, my_features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
 
+#import sys
+#sys.exit("Error message")
+
 # Select k best features
 from sklearn.feature_selection import SelectKBest
 import pandas as pd
@@ -149,9 +152,13 @@ X_new = selector.transform(X_df)
 print "after:", X_new.shape
 
 # Get names of K best features
-print X_df.columns[selector.get_support(indices=True)]
+k_best_features = (["poi"] + 
+                   (list(X_df.columns[selector.get_support(indices=True)])))
 print sorted(selector.scores_, reverse=True)[:5]
 
+# Extract features and labels using K best features
+data = featureFormat(my_dataset, k_best_features, sort_keys = True)
+labels, features = targetFeatureSplit(data)
 
 ### Task 4: Try a variety of classifiers
 ### Please name your classifier clf for easy export below.
@@ -268,6 +275,9 @@ print cv_clf.best_params_
 ### check your results. You do not need to change anything below, but make sure
 ### that the version of poi_id.py that you submit can be run on its own and
 ### generates the necessary .pkl files for validating your results.
+
+# Final choice features list.
+my_features_list = k_best_features
 
 dump_classifier_and_data(clf, my_dataset, my_features_list)
 
