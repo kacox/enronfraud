@@ -136,9 +136,6 @@ my_dataset = helper.rescale_features(data_dict, no_poi_features_list)
 data = featureFormat(my_dataset, my_features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
 
-#import sys
-#sys.exit("Error message")
-
 # Select k best features
 from sklearn.feature_selection import SelectKBest
 import pandas as pd
@@ -258,8 +255,9 @@ def kfold_eval(clf, X_train, y_train, X_test, y_test, num_folds):
 
 
     
-clf = DecisionTreeClassifier(min_samples_split=5)  
+clf = GaussianNB()
 kfold_eval(clf, X_train, y_train, X_test, y_test, 4)
+
 """
 # GridSearchCV (cross validation for parameter tuning)
 from sklearn.model_selection import GridSearchCV
