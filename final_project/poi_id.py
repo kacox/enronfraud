@@ -4,6 +4,7 @@
 ### IMPORTS AND GLOBALS
 import sys
 import pickle
+import operator
 sys.path.append("../tools/")
 import numpy as np
 
@@ -16,9 +17,11 @@ import helper_fxns as helper
 
 
 ### MAIN
+
 """
-Task 1: Select what features you'll use.
+TASK 1: Select what features you'll use.
 """
+
 # boolean, represented as integer
 POI_label = ['poi']
 
@@ -70,12 +73,6 @@ print "Mean:", np.mean(nan_list)
 print "Median:", np.median(nan_list)
 print "75th percentile:", np.percentile(nan_list, 75)
 
-# 1D inspection of missing values (checking before ruling out)
-#helper.draw_1D(data_dict, "director_fees")
-#helper.draw_1D(data_dict, "deferred_income")
-#helper.draw_1D(data_dict, "restricted_stock_deferred")
-#helper.draw_1D(data_dict, "loan_advances")
-#helper.draw_1D(data_dict, "deferral_payments")
 
 # Remove features with too many missing values
 removal_list = ["director_fees", "deferred_income", 
@@ -87,14 +84,17 @@ for item in removal_list:
     my_features_list.remove(item) 
 
 
-### Task 2: Remove outliers
+"""
+TASK 2: Remove outliers
+"""
+
 # Remove artifact in data (found during lectures)
 data_dict.pop("TOTAL", 0)
 
 # Visual inspection
 helper.make_2D_plot(data_dict, "salary", "bonus")
 helper.draw_1D(data_dict, "salary")
-#print helper.find_max_person(data_dict, "salary")
+print helper.find_max_person(data_dict, "salary")
 
 # Check data points with many missing values
 nan_dict = {}
@@ -106,16 +106,20 @@ for person, feature_dict in data_dict.iteritems():
             else:
                 nan_dict[person] = 1
 
-#print sorted(nan_dict.items(), key=operator.itemgetter(1), reverse=True)[:10]
-#print data_dict['LOCKHART EUGENE E']
-#print data_dict['THE TRAVEL AGENCY IN THE PARK']
+print sorted(nan_dict.items(), key=operator.itemgetter(1), reverse=True)[:10]
+print data_dict['LOCKHART EUGENE E']
+print data_dict['THE TRAVEL AGENCY IN THE PARK']
 
 # Remove these data points
 data_dict.pop("LOCKHART EUGENE E", 0)
 data_dict.pop("THE TRAVEL AGENCY IN THE PARK", 0)
 
 
-### Task 3: Create new feature(s)
+"""
+TASK 3: Create new feature(s)
+"""
+
+# Engineer new features from old
 data_dict = helper.create_fraction_feature(data_dict,"from_this_person_to_poi", 
                                            "from_messages", "fraction_to_poi")
 data_dict = helper.create_fraction_feature(data_dict,"from_poi_to_this_person", 
@@ -132,7 +136,7 @@ no_poi_features_list = list(my_features_list)
 no_poi_features_list.remove("poi")
 my_dataset = helper.rescale_features(data_dict, no_poi_features_list)
 
-### Extract features and labels from dataset for local testing
+# Extract features and labels from dataset for local testing
 data = featureFormat(my_dataset, my_features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
 
@@ -157,11 +161,14 @@ print sorted(selector.scores_, reverse=True)[:5]
 data = featureFormat(my_dataset, k_best_features, sort_keys = True)
 labels, features = targetFeatureSplit(data)
 
-### Task 4: Try a variety of classifiers
-### Please name your classifier clf for easy export below.
-### Note that if you want to do PCA or other multi-stage operations,
-### you'll need to use Pipelines. For more info:
-### http://scikit-learn.org/stable/modules/pipeline.html
+
+"""
+TASK 4: Try a variety of classifiers
+
+Please name your classifier clf for easy export below. Note that if you want 
+to do PCA or other multi-stage operations, you'll need to use Pipelines. For 
+more info: http://scikit-learn.org/stable/modules/pipeline.html
+"""
 
 # Split into training and testing sets
 from sklearn.model_selection import train_test_split
@@ -194,12 +201,14 @@ svm_clf.fit(X_train, y_train)
 # 0.9767 (random_state=37)
 
 
-### Task 5: Tune your classifier to achieve better than .3 precision and recall 
-### using our testing script. Check the tester.py script in the final project
-### folder for details on the evaluation method, especially the test_classifier
-### function. Because of the small size of the dataset, the script uses
-### stratified shuffle split cross validation. For more info: 
-### http://scikit-learn.org/stable/modules/generated/sklearn.cross_validation.StratifiedShuffleSplit.html
+"""
+TASK 5: Tune your classifier to achieve better than .3 precision and recall 
+using our testing script. Check the tester.py script in the final project
+folder for details on the evaluation method, especially the test_classifier
+function. Because of the small size of the dataset, the script uses
+stratified shuffle split cross validation. For more info: 
+http://scikit-learn.org/stable/modules/generated/sklearn.cross_validation.StratifiedShuffleSplit.html
+"""
 
 from sklearn.metrics import recall_score
 from sklearn.metrics import precision_score
@@ -220,14 +229,16 @@ print cv_clf.best_params_
 """
 
 
-### Task 6: Dump your classifier, dataset, and features_list so anyone can
-### check your results. You do not need to change anything below, but make sure
-### that the version of poi_id.py that you submit can be run on its own and
-### generates the necessary .pkl files for validating your results.
+"""
+TASK 6: Dump your classifier, dataset, and features_list so anyone can check 
+your results. You do not need to change anything below, but make sure that 
+the version of poi_id.py that you submit can be run on its own and generates 
+the necessary .pkl files for validating your results.
+"""
 
 # Final choice features list and algorithm.
 my_features_list = k_best_features
 clf = GaussianNB()
 
-dump_classifier_and_data(clf, my_dataset, my_features_list)
+#dump_classifier_and_data(clf, my_dataset, my_features_list)
 
